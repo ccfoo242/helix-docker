@@ -1,11 +1,12 @@
 # --------------------------------------------------------------------------------
 # Docker configuration for P4D
+# Copied from Sourcegraph so I can run it from truenas
 # --------------------------------------------------------------------------------
 
 FROM ubuntu:focal
 
-LABEL vendor="Sourcegraph"
-LABEL maintainer="Joe Chen (joe@sourcegraph.com)"
+LABEL vendor="ccfoo242"
+LABEL maintainer="ccfoo242"
 
 # Update Ubuntu and add Perforce Package Source
 RUN \
@@ -23,20 +24,19 @@ RUN \
 # Do in-page search over https://package.perforce.com/apt/ubuntu/dists/focal/release/binary-amd64/Packages
 # for both "Package: helix-p4d" and "Package: helix-swarm-triggers".
 RUN \
-  apt-get install -y helix-p4d=2023.1-2468153~focal && \
-  apt-get install -y helix-swarm-triggers=2023.1-2414875~focal
+  apt-get install -y helix-p4d=2023.1-2468153~focal 
 
 # Add external files
-COPY files/restore.sh /usr/local/bin/restore.sh
-COPY files/setup.sh /usr/local/bin/setup.sh
-COPY files/init.sh /usr/local/bin/init.sh
-COPY files/latest_checkpoint.sh /usr/local/bin/latest_checkpoint.sh
+COPY files/restore.sh /root/restore.sh
+COPY files/setup.sh /root/setup.sh
+COPY files/init.sh /root/init.sh
+COPY files/latest_checkpoint.sh /root/latest_checkpoint.sh
 
 RUN \
-  chmod +x /usr/local/bin/restore.sh && \
-  chmod +x /usr/local/bin/setup.sh && \
-  chmod +x /usr/local/bin/init.sh && \
-  chmod +x /usr/local/bin/latest_checkpoint.sh
+  chmod +x /root/restore.sh && \
+  chmod +x /root/setup.sh && \
+  chmod +x /root/init.sh && \
+  chmod +x /root/latest_checkpoint.sh
 
 # --------------------------------------------------------------------------------
 # Docker ENVIRONMENT
@@ -54,6 +54,7 @@ ARG P4CHARSET=utf8
 # Dynamic Environment
 ENV NAME=$NAME \
   P4NAME=$P4NAME \
+  P4HOME=$P4HOME \
   P4TCP=$P4TCP \
   P4PORT=$P4TCP \
   P4USER=$P4USER \
@@ -63,7 +64,6 @@ ENV NAME=$NAME \
   JNL_PREFIX=$P4NAME
 
 # Base Environment
-ENV P4HOME=/p4
 
 # Derived Environment
 ENV P4ROOT=$P4HOME/root \

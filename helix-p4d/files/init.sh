@@ -4,16 +4,11 @@
 mkdir -p "$P4ROOT"
 mkdir -p "$P4DEPOTS"
 mkdir -p "$P4CKP"
+mkdir -p "$P4DROOT/etc/perforce"
 
-# Restore checkpoint if symlink latest exists
-if [ -L "$P4CKP/latest" ]; then
-    echo "Restoring checkpoint..."
-	restore.sh
-	rm "$P4CKP/latest"
-else
-	echo "Create empty or start existing server..."
-	setup.sh
-fi
+# Removed restore checkpoint section until I understand more
+echo "Create empty or start existing server..."
+setup.sh
 
 p4 login <<EOF
 $P4PASSWD
